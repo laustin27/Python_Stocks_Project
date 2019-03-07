@@ -1,6 +1,10 @@
 # Python_Stocks_Project
-Working with stocks data. Using the iex-api-python which is described here: https://pypi.org/project/iex-api-python/
+Working with stocks data using the iex-api-python which is described here: https://pypi.org/project/iex-api-python/
 
+There will be 4 modules, **tickers.py**, **fetcher.py**, **query.py**, and **predictor.py**.  
+They are described below:
+
+---
 ## Tickers: 
 
  - Have a function, say **save tickers** that fetches the first n valid tickers from the following URL and writes the tickers in a file, say tickers.txt:
