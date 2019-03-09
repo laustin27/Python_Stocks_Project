@@ -17,6 +17,16 @@ python3 tickers.py number of tickers ticker filename
 """
 import requests
 from pyquery import PyQuery
+from iex import Stock
+
+
+def verifyTickers(symbol_list):
+    for ticker in symbol_list:
+        try:
+            Stock(ticker).price()
+        except:
+            symbol_list.remove(ticker)
+
 
 def saveTickers(n):
     """
@@ -25,6 +35,9 @@ def saveTickers(n):
     :return:
 
     """
+    if n > 150:
+        raise Exception("You need to give me a number less than or equal to 150!")
+
     request = requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&pagesize=" + str(n))
     parser = PyQuery(request.text)
     table = parser("#CompanylistResults")
@@ -32,13 +45,15 @@ def saveTickers(n):
     table_parser = PyQuery(table)
     symbols = table_parser("h3")
     symbol_list = [symbol for symbol in symbols.text().split()]
+    verifyTickers(symbol_list)
 
     f = open("tickers.txt", "w")
     for symbol in symbol_list:
-        f.write(symbol + "\n")
+        f.write(symbol + '\n')
 
     f.close()
 
 
 if __name__ == "__main__":
-    saveTickers(200)
+    saveTickers(100)
+
