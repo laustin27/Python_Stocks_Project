@@ -21,14 +21,6 @@ from pyquery import PyQuery
 from iex import Stock
 
 
-def verifyTickers(symbol_list):
-    for ticker in symbol_list:
-        try:
-            Stock(ticker).price()
-        except:
-            symbol_list.remove(ticker)
-
-
 def saveTickers(n, filename):
     """
     fetch the first n valid tickers from http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQrender=download
@@ -39,14 +31,19 @@ def saveTickers(n, filename):
     if int(n) > 150:
         raise Exception("You need to give me a number less than or equal to 150!")
 
-    request = requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&pagesize=" + str(n))
+    request = requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&pagesize=" + n)
     parser = PyQuery(request.text)
     table = parser("#CompanylistResults")
 
     table_parser = PyQuery(table)
     symbols = table_parser("h3")
     symbol_list = [symbol for symbol in symbols.text().split()]
-    verifyTickers(symbol_list)
+
+    for ticker in symbol_list:
+        try:
+            Stock(ticker).price()
+        except:
+            symbol_list.remove(ticker)
 
     f = open(filename, "w")
     for symbol in symbol_list:
