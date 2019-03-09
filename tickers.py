@@ -15,3 +15,30 @@ python3 tickers.py number of tickers ticker filename
 – The number n will be provided as a system argument to the module. There should be a main module
   that calls the save tickers function and passes the value of n to it. The value of n will be ≤ 150.
 """
+import requests
+from pyquery import PyQuery
+
+def saveTickers(n):
+    """
+    fetch the first n valid tickers from http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQrender=download
+    and writes the tickers in a file that is returned
+    :return:
+
+    """
+    request = requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&pagesize=" + str(n))
+    parser = PyQuery(request.text)
+    table = parser("#CompanylistResults")
+
+    table_parser = PyQuery(table)
+    symbols = table_parser("h3")
+    symbol_list = [symbol for symbol in symbols.text().split()]
+
+    f = open("tickers.txt", "w")
+    for symbol in symbol_list:
+        f.write(symbol + "\n")
+
+    f.close()
+
+
+if __name__ == "__main__":
+    saveTickers(200)
