@@ -18,4 +18,7 @@ python3 predictor.py ticker info filename graph filename col t
 
 – You must also plot and save the plot for the historical variation in the value of col as well as the predicted
   values. The actual and predicted data should be plotted out on the same graph in two different colours.
+
+Mehran will work on it
+
 """
