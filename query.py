@@ -22,3 +22,26 @@ be HH:MM. Example is: 13:31.
              file (information file that contains the information)
              ticker
 """
+
+
+
+
+import sys
+labels=['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
+def readData(verbose, filename, ticker, time):
+    with open(filename, 'r') as info:
+        for line in info:
+            if((time+', '+ticker) in line):
+                tokens = line.strip().split()
+                for i in range(len(tokens)):
+                    print(f'{labels[i]}: {tokens[i]}'.replace(',',''))
+
+
+
+
+
+if __name__ == "__main__":
+    if(len(sys.argv)!=9):
+        print(f'number of parameters provided is {len(sys.argv)}! It should be 9!')
+    else:
+        readData(sys.argv[2], sys.argv[4], sys.argv[6], sys.argv[8])
