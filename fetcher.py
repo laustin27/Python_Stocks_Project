@@ -35,3 +35,37 @@ python3 fetcher.py time lim ticker filename info filename
 
 – The arguments passed to this module are: time lim, ticker filename, info filename
 """
+
+import sys
+import csv
+import datetime
+from iex import Stock
+
+
+def readTickers(ticker_file, csv_file):
+    fp = open(ticker_file)
+    open_csv = open(csv_file, 'w')
+    info_writer = csv.writer(open_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    info_writer.writerow(['TIME', 'ticker', 'low', 'high', 'open', 'close', 'latestPrice', 'latestVolume'])
+
+    for ticker in fp:
+        writeToFile(ticker.strip('\n'), info_writer)
+
+    fp.close()
+
+
+def writeToFile(ticker, info_writer):
+    currentDT = datetime.datetime.now()
+    hour = str(currentDT.hour)
+    minute = currentDT.minute
+    if minute < 10:
+        minute = '0' + str(minute)
+    else:
+        minute = str(minute)
+
+    ticker_info = Stock(ticker).quote()
+    info_writer.writerow([hour + ':' + minute, ticker, ticker_info['low'], ticker_info['high'], ticker_info['open'], ticker_info['close'], ticker_info['latestPrice'], ticker_info['latestVolume']])
+
+
+if __name__ == "__main__":
+    readTickers(sys.argv[1], sys.argv[2])
