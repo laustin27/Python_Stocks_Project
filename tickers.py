@@ -19,13 +19,30 @@ import sys
 import requests
 from pyquery import PyQuery
 from iex import Stock
+from selenium import webdriver
+
+
+def pull150ItemsURL():
+    # Set up Chrome instance of this url
+    driver = webdriver.Chrome(executable_path='./chromedriver')
+    driver.get('http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQrender=download')
+
+    # Click on the 150 option in page size select so we can get all the symbols we need
+    page_size_select = driver.find_element_by_id('main_content_lstpagesize')
+    for page_size_option in page_size_select.find_elements_by_tag_name('option'):
+        if page_size_option.text == '150 Items Per Page':
+            page_size_option.click()
+            break
+
+    return driver.current_url
 
 
 def saveTickers(n, filename):
     if int(n) > 150:
         raise Exception("You need to give me a number less than or equal to 150!")
 
-    request = requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&pagesize=" + n)
+    # Create request with 150 item url
+    request = requests.get(pull150ItemsURL())
     parser = PyQuery(request.text)
     table = parser("#CompanylistResults")
 
