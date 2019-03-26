@@ -22,12 +22,6 @@ from iex import Stock
 
 
 def saveTickers(n, filename):
-    """
-    fetch the first n valid tickers from http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQrender=download
-    and writes the tickers in a file that is returned
-    :return:
-
-    """
     if int(n) > 150:
         raise Exception("You need to give me a number less than or equal to 150!")
 

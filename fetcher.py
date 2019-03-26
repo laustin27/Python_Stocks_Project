@@ -39,10 +39,11 @@ python3 fetcher.py time lim ticker filename info filename
 import sys
 import csv
 import datetime
+import time
 from iex import Stock
 
 
-def writeToFile(ticker, info_writer):
+def writeToFile(ticker, info_writer, endTime):
     currentDT = datetime.datetime.now()
     hour = str(currentDT.hour)
     minute = currentDT.minute
@@ -51,22 +52,32 @@ def writeToFile(ticker, info_writer):
     else:
         minute = str(minute)
 
+    # If function exceeds its endTime then exit the module
+    if currentDT >= endTime:
+        exit(0)
+
     ticker_info = Stock(ticker).quote()
     info_writer.writerow([hour + ':' + minute, ticker, ticker_info['low'], ticker_info['high'], ticker_info['open'],
                           ticker_info['close'], ticker_info['latestPrice'], ticker_info['latestVolume']])
 
 
-def readTickers(ticker_file, csv_file):
+def readTickers(time_lim, ticker_file, csv_file):
     fp = open(ticker_file)
     open_csv = open(csv_file, 'w')
     info_writer = csv.writer(open_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     info_writer.writerow(['TIME', 'ticker', 'low', 'high', 'open', 'close', 'latestPrice', 'latestVolume'])
 
+    # Calculate time to sleep until next minute starts
+    sleepTime = 60 - (datetime.datetime.now().second + datetime.datetime.now().microsecond / 1000000.0)
+    time.sleep(sleepTime)
+
+    # Calculate how long the function should run
+    endTime = datetime.datetime.now() + datetime.timedelta(seconds=int(time_lim))
     for ticker in fp:
-        writeToFile(ticker=ticker.strip('\n'), info_writer=info_writer)
+        writeToFile(ticker=ticker.strip('\n'), info_writer=info_writer, endTime=endTime)
 
     fp.close()
 
 
 if __name__ == "__main__":
-    readTickers(sys.argv[1], sys.argv[2])
+    readTickers(sys.argv[1], sys.argv[2], sys.argv[3])
