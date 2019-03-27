@@ -42,7 +42,7 @@ def saveTickers(n, filename):
         raise Exception("You need to give me a number less than or equal to 150!")
 
     # Create request with 150 item url
-    request = requests.get(pull150ItemsURL())
+    request = requests.get(url=pull150ItemsURL())
     parser = PyQuery(request.text)
     table = parser("#CompanylistResults")
 
@@ -52,7 +52,7 @@ def saveTickers(n, filename):
 
     for ticker in symbol_list:
         try:
-            Stock(ticker).price()
+            Stock(symbol=ticker).price()
         except:
             symbol_list.remove(ticker)
 
@@ -64,5 +64,5 @@ def saveTickers(n, filename):
 
 
 if __name__ == "__main__":
-    saveTickers(sys.argv[1], sys.argv[2])
+    saveTickers(n=sys.argv[1], filename=sys.argv[2])
 

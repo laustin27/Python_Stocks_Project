@@ -56,7 +56,7 @@ def writeToFile(ticker, info_writer, endTime):
     if currentDT >= endTime:
         exit(0)
 
-    ticker_info = Stock(ticker).quote()
+    ticker_info = Stock(symbol=ticker).quote()
     info_writer.writerow([hour + ':' + minute, ticker, ticker_info['low'], ticker_info['high'], ticker_info['open'],
                           ticker_info['close'], ticker_info['latestPrice'], ticker_info['latestVolume']])
 
@@ -80,4 +80,4 @@ def readTickers(time_lim, ticker_file, csv_file):
 
 
 if __name__ == "__main__":
-    readTickers(sys.argv[1], sys.argv[2], sys.argv[3])
+    readTickers(time_lim=sys.argv[1], ticker_file=sys.argv[2], csv_file=sys.argv[3])
