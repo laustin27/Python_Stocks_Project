@@ -50,15 +50,21 @@ def saveTickers(n, filename):
     symbols = table_parser("h3")
     symbol_list = [symbol for symbol in symbols.text().split()]
 
-    for ticker in symbol_list:
+    for i, ticker in enumerate(symbol_list):
         try:
-            Stock(symbol=ticker).price()
+            if i <= int(n):
+                Stock(symbol=ticker).price()
+            else:
+                break
         except:
             symbol_list.remove(ticker)
 
     f = open(filename, "w")
-    for symbol in symbol_list:
-        f.write(symbol + '\n')
+    for i, symbol in enumerate(symbol_list):
+        if i <= int(n):
+            f.write(symbol + '\n')
+        else:
+            break
 
     f.close()
 
