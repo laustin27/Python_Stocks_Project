@@ -75,6 +75,7 @@ def readTickers(time_lim, ticker_file, csv_file):
     for ticker in fp:
         writeToFile(ticker=ticker.strip('\n'), info_writer=info_writer, endTime=endTime)
 
+    open_csv.close()
     fp.close()
 
 

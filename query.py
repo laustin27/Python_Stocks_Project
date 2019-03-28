@@ -27,17 +27,21 @@ be HH:MM. Example is: 13:31.
 
 
 import sys
+import csv
+
 labels=['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
 def readData(verbose, filename, ticker, time):
-    with open(filename, 'r') as info:
-        for line in info:
-            if((time+', '+ticker) in line):
-                tokens = line.strip().split()
-                for i in range(len(tokens)):
-                    print(f'{labels[i]}: {tokens[i]}'.replace(',',''))
-
-
-
+    with open(filename) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        for row in readCSV:
+            if time in row and ticker in row:
+                if verbose:
+                    print("# of columns", len(row))
+                    row_count = sum(1 for row in readCSV)
+                    print("# of rows", row_count)
+                print("File", filename)
+                for i in range(len(row)):
+                    print(f'{labels[i]}: {row[i]}')
 
 
 if __name__ == "__main__":
