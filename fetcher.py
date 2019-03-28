@@ -63,9 +63,8 @@ def writeToFile(ticker, info_writer, endTime):
 
 def readTickers(time_lim, ticker_file, csv_file):
     fp = open(ticker_file)
-    open_csv = open(csv_file, 'w')
+    open_csv = open(csv_file, 'a')
     info_writer = csv.writer(open_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    info_writer.writerow(['TIME', 'ticker', 'low', 'high', 'open', 'close', 'latestPrice', 'latestVolume'])
 
     # Calculate time to sleep until next minute starts
     sleepTime = 60 - (datetime.datetime.now().second + datetime.datetime.now().microsecond / 1000000.0)
