@@ -28,7 +28,7 @@ import datetime
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-labels = ['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
+labels = ['time', 'ticker', 'latestPrice', 'latestVolume', 'close', 'open', 'low', 'high']
 
 
 def buildListofTickerDictionaries(csv_filename, ticker, col_name):
@@ -39,7 +39,7 @@ def buildListofTickerDictionaries(csv_filename, ticker, col_name):
             if ticker in row:
                 ticker_dictionary = dict()
                 for i in range(len(row)):
-                    if labels[i] == col_name or labels[i] == "Time" or labels[i] == "Ticker":
+                    if labels[i] == col_name or labels[i] == "time" or labels[i] == "ticker":
                         ticker_dictionary[labels[i]] = row[i]
 
                 dict_list.append(ticker_dictionary)
@@ -50,15 +50,15 @@ def buildListofTickerDictionaries(csv_filename, ticker, col_name):
 def predict(ticker, csv_filename,  graph_filename, col_name, time_range):
     dict_list = buildListofTickerDictionaries(csv_filename, ticker, col_name)
     for ticker_dictionary in dict_list:
-        Time = ticker_dictionary.get("Time").split(":")
-        ticker_dictionary["Hour"] = Time[0]
-        ticker_dictionary["Minute"] = Time[1]
+        Time = ticker_dictionary.get("time").split(":")
+        ticker_dictionary["hour"] = Time[0]
+        ticker_dictionary["minute"] = Time[1]
 
     # Populate two arrays of known data
     x_time_list = []
     y_value_list = []
     for ticker_dictionary in dict_list:
-        x_time_list.append(int(ticker_dictionary.get("Hour"))*60 + int(ticker_dictionary.get("Minute")))
+        x_time_list.append(int(ticker_dictionary.get("hour"))*60 + int(ticker_dictionary.get("minute")))
         y_value_list.append(float(ticker_dictionary.get(col_name)))
 
     # Create line of fit
@@ -81,7 +81,7 @@ def predict(ticker, csv_filename,  graph_filename, col_name, time_range):
 
     plt.title(ticker)
     plt.ylabel(col_name)
-    plt.xlabel("Time")
+    plt.xlabel("Time (minutes)")
     plt.scatter(x_time_list, y_value_list, color='blue')
     plt.scatter(minutes_to_predict, prediction, color='red')
     plt.savefig(graph_filename)

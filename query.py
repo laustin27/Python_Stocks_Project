@@ -29,7 +29,7 @@ be HH:MM. Example is: 13:31.
 import sys
 import csv
 
-labels = ['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
+labels = ['Time', 'Ticker', 'latestPrice', 'latestVolume', 'close', 'open', 'low', 'high']
 
 
 def readData(verbose, filename, ticker, time):
