@@ -21,3 +21,72 @@ python3 predictor.py ticker info filename graph filename col t
 
 Mehran will work on this
 """
+import sys
+import csv
+import matplotlib.pyplot as plt
+import datetime
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+labels = ['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
+
+
+def buildListofTickerDictionaries(csv_filename, ticker, col_name):
+    dict_list = []
+    with open(csv_filename) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        for row in readCSV:
+            if ticker in row:
+                ticker_dictionary = dict()
+                for i in range(len(row)):
+                    if labels[i] == col_name or labels[i] == "Time" or labels[i] == "Ticker":
+                        ticker_dictionary[labels[i]] = row[i]
+
+                dict_list.append(ticker_dictionary)
+
+    return dict_list
+
+
+def predict(ticker, csv_filename,  graph_filename, col_name, time_range):
+    dict_list = buildListofTickerDictionaries(csv_filename, ticker, col_name)
+    for ticker_dictionary in dict_list:
+        Time = ticker_dictionary.get("Time").split(":")
+        ticker_dictionary["Hour"] = Time[0]
+        ticker_dictionary["Minute"] = Time[1]
+
+    # Populate two arrays of known data
+    x_time_list = []
+    y_value_list = []
+    for ticker_dictionary in dict_list:
+        x_time_list.append(int(ticker_dictionary.get("Hour"))*60 + int(ticker_dictionary.get("Minute")))
+        y_value_list.append(float(ticker_dictionary.get(col_name)))
+
+    # Create line of fit
+    regr = LinearRegression()
+    np_x_time_list = np.array(x_time_list).reshape(-1, 1)
+    np_y_value_list = np.array(y_value_list)
+    regr.fit(np_x_time_list, np_y_value_list)
+
+    # Create an array of minutes to predict
+    minutes_to_predict = []
+    now = datetime.datetime.now()
+    for i in range(0, int(time_range) + 1):
+        minutes_to_predict.append(now.hour*60 + now.minute + i)
+
+    # Create prediction
+    np_minutes_to_predict = np.array(minutes_to_predict).reshape(-1, 1)
+    prediction = regr.predict(np_minutes_to_predict)
+    print(x_time_list, y_value_list)
+    print(minutes_to_predict, prediction)
+
+    plt.title(ticker)
+    plt.ylabel(col_name)
+    plt.xlabel("Time")
+    plt.scatter(x_time_list, y_value_list, color='blue')
+    plt.scatter(minutes_to_predict, prediction, color='red')
+    plt.savefig(graph_filename)
+    plt.show()
+
+
+if __name__ == "__main__":
+    predict(ticker=sys.argv[1], csv_filename=sys.argv[2], graph_filename=sys.argv[3], col_name=sys.argv[4], time_range=sys.argv[5])

@@ -1,6 +1,7 @@
 """
 A .py file for the Fetcher module. To execute this code, we will use the following command:
 python3 fetcher.py time lim ticker filename info filename
+-QUERY EVERY MINUTE
 
 - Read all the tickers from an input file (tickers.txt). The tickers are listed one per line.
 
@@ -54,7 +55,7 @@ def writeToFile(ticker, info_writer, endTime):
 
     # If function exceeds its endTime then exit the module
     if currentDT >= endTime:
-        exit(0)
+        return
 
     ticker_info = Stock(symbol=ticker).quote()
     info_writer.writerow([hour + ':' + minute, ticker, ticker_info['low'], ticker_info['high'], ticker_info['open'],
@@ -62,21 +63,20 @@ def writeToFile(ticker, info_writer, endTime):
 
 
 def readTickers(time_lim, ticker_file, csv_file):
-    fp = open(ticker_file)
     open_csv = open(csv_file, 'a')
     info_writer = csv.writer(open_csv, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-    # Calculate time to sleep until next minute starts
-    sleepTime = 60 - (datetime.datetime.now().second + datetime.datetime.now().microsecond / 1000000.0)
-    time.sleep(sleepTime)
+    while True:
+        fp = open(ticker_file)
+        # Calculate time to sleep until next minute starts
+        sleepTime = 60 - (datetime.datetime.now().second + datetime.datetime.now().microsecond / 1000000.0)
+        time.sleep(sleepTime)
 
-    # Calculate how long the function should run
-    endTime = datetime.datetime.now() + datetime.timedelta(seconds=int(time_lim))
-    for ticker in fp:
-        writeToFile(ticker=ticker.strip('\n'), info_writer=info_writer, endTime=endTime)
-
-    open_csv.close()
-    fp.close()
+        # Calculate how long the function should run
+        endTime = datetime.datetime.now() + datetime.timedelta(seconds=int(time_lim))
+        for ticker in fp:
+            writeToFile(ticker=ticker.strip('\n'), info_writer=info_writer, endTime=endTime)
+        fp.close()
 
 
 if __name__ == "__main__":

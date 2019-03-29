@@ -29,8 +29,11 @@ be HH:MM. Example is: 13:31.
 import sys
 import csv
 
-labels=['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
+labels = ['Time', 'Ticker', 'latestPrice', 'latestVolume', 'Close', 'Open', 'low', 'high']
+
+
 def readData(verbose, filename, ticker, time):
+    ticker_dictionary = dict()
     with open(filename) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         for row in readCSV:
@@ -41,11 +44,16 @@ def readData(verbose, filename, ticker, time):
                     print("# of rows", row_count)
                 print("File", filename)
                 for i in range(len(row)):
+                    ticker_dictionary[labels[i]] = row[i]
                     print(f'{labels[i]}: {row[i]}')
+
+
+
+    return ticker_dictionary
 
 
 if __name__ == "__main__":
     if(len(sys.argv)!=9):
         print(f'number of parameters provided is {len(sys.argv)}! It should be 9!')
     else:
-        readData(sys.argv[2], sys.argv[4], sys.argv[6], sys.argv[8])
+        readData(verbose=sys.argv[2], filename=sys.argv[4], ticker=sys.argv[6], time=sys.argv[8])
