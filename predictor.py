@@ -76,8 +76,6 @@ def predict(ticker, csv_filename,  graph_filename, col_name, time_range):
     # Create prediction
     np_minutes_to_predict = np.array(minutes_to_predict).reshape(-1, 1)
     prediction = regr.predict(np_minutes_to_predict)
-    print(x_time_list, y_value_list)
-    print(minutes_to_predict, prediction)
 
     plt.title(ticker)
     plt.ylabel(col_name)
@@ -85,7 +83,6 @@ def predict(ticker, csv_filename,  graph_filename, col_name, time_range):
     plt.scatter(x_time_list, y_value_list, color='blue')
     plt.scatter(minutes_to_predict, prediction, color='red')
     plt.savefig(graph_filename)
-    plt.show()
 
 
 if __name__ == "__main__":

@@ -53,6 +53,7 @@ def readData(verbose, filename, ticker, time):
 
 
 if __name__ == "__main__":
+    # I know this only allows verbose flags, I did not have time to fix this
     if(len(sys.argv)!=9):
         print(f'number of parameters provided is {len(sys.argv)}! It should be 9!')
     else:
